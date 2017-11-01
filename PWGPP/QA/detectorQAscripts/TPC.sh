@@ -11,6 +11,7 @@ runLevelQA()
   qaFile=$1
 
   cp $ALICE_PHYSICS/PWGPP/TPC/macros/MakeTrend.C .
+  cp $ALICE_PHYSICS/PWGPP/TPC/macros/CalibSummary.C
   cp $ALICE_PHYSICS/PWGPP/CalibMacros/CPass0/ConfigCalibTrain.C .
 
   echo $dataType/$year/$period/$pass/$runNumber
@@ -21,9 +22,18 @@ runLevelQA()
   export epass=$pass
   export erunNumber=$runNumber
   export eocdbStorage=$ocdbStorage
+
+  # ===| QA trending |==========================================================
   echo aliroot -b -q -l "ConfigCalibTrain.C\($runNumber,\"$ocdbStorage\"\)  MakeTrend.C(\"$qaFile\",$runNumber)" 
   aliroot -b -q -l ConfigCalibTrain.C\($runNumber,\"$ocdbStorage\"\)  "MakeTrend.C(\"$qaFile\",$runNumber)" 
 
+  # ===| calibration QA trending |==============================================
+  cmd="aliroot -b -q -l ConfigCalibTrain.C'($runNumber,\"$ocdbStorage\"\)'  CalibSummary.C"
+  echo $cmd
+  eval $cmd
+  test -f dcsTime.root && mv dcsTime.root trendingTPC_OCDB.root
+
+  # ===| QA histograms |========================================================
   cp $ALICE_PHYSICS/PWGPP/TPC/macros/drawPerformanceTPCQAMatch.C .
   echo aliroot -b -q -l " drawPerformanceTPCQAMatch.C(\"$qaFile\")"
   aliroot -b -q -l " drawPerformanceTPCQAMatch.C(\"$qaFile\")"
