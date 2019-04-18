@@ -42,6 +42,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   // Draw control histograms
   // and generate output pictures
   //
+  if (TString(inFile).Contains("alien://")) TGrid::Connect("alien");
 
   gSystem->Load("libSTAT");
   gSystem->Load("libANALYSIS");
@@ -80,7 +81,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   cout<<"QA file opened"<<endl;
   file->cd();
   // get the TPC list
-  if(gROOT->FindObject("TPC_PerformanceQA")) TPC_PerformanceQA->cd();
+  if(gROOT->FindObject("TPC_PerformanceQA")) ((TDirectoryFile*)file->Get("TPC_PerformanceQA"))->cd();
   cout<<"TPC_PerformanceQA opened"<<endl;
   TList *TPC = (TList*)gROOT->FindObject("TPCQA");
   if(TPC==NULL) TPC = (TList*)gROOT->FindObject("TPCQA_v0_c0");
@@ -153,7 +154,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can1->cd(5);
   gPad->SetLogy();
-  TH1 *hp = fold->FindObject("h_tpc_event_recvertex_3");
+  TH1 *hp = (TH1*)fold->FindObject("h_tpc_event_recvertex_3");
   hp->SetTitle("Track.Multi., ncl>70, |dcar|<3 cm, |dcaz|<3 cm");
   hp->Draw("histe");
 
@@ -162,7 +163,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   hp = (TH1*)fold->FindObject("h_tpc_event_recvertex_4");
   hp->SetTitle("Pos/neg(red) Track.Multi. ncl>70, |dcar|<3 cm, |dcaz|<3 cm");
   hp->Draw("histe");
-  TH1* he = fold->FindObject("h_tpc_event_recvertex_5");
+  TH1* he = (TH1*)fold->FindObject("h_tpc_event_recvertex_5");
   he->SetLineColor(kRed);
   he->Draw("histesame");
 
@@ -240,7 +241,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can2->cd(6);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_5_6_7");
-  TH3 *h3D1 = h3D->Clone("h3D1");
+  TH3 *h3D1 = (TH3*)h3D->Clone("h3D1");
   h3D1->GetXaxis()->SetRangeUser(0.0,maxeta);
   h3D1->GetZaxis()->SetRangeUser(2,20);
   h1D = h3D1->Project3D("y");
@@ -248,7 +249,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   h1D->Draw("histe");
 
   h3D = (TH3*)fold->FindObject("h_tpc_track_neg_recvertex_5_6_7");
-  TH3 *h3D2 = h3D->Clone("h3D2");
+  TH3 *h3D2 = (TH3*)h3D->Clone("h3D2");
   h3D2->GetXaxis()->SetRangeUser(0.0,maxeta);
   h3D2->GetZaxis()->SetRangeUser(2,20);
   h1D = h3D2->Project3D("y");
@@ -327,7 +328,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can4->cd(2);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_0_5_6");
-  TH3 *h3D11 = h3D->Clone("h3D11");
+  TH3 *h3D11 = (TH3*)h3D->Clone("h3D11");
   h3D11->Add(((TH3*)fold->FindObject("h_tpc_track_neg_recvertex_0_5_6")),1);
   h3D11->GetYaxis()->SetRangeUser(mineta,-0.00001);
   h2D = (TH2*)h3D11->Project3D("xz");
@@ -338,7 +339,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can4->cd(5);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_0_5_6");
-  TH3 *h3D22 = h3D->Clone("h3D22");
+  TH3 *h3D22 = (TH3*)h3D->Clone("h3D22");
   h3D22->Add(((TH3*)fold->FindObject("h_tpc_track_neg_recvertex_0_5_6")),1);
   h3D22->GetYaxis()->SetRangeUser(0.0,maxeta);
   h2D->SetTitle("nCluster vs #phi, 0.0<#eta<0.8, |dcar|<3 cm, |dcaz|<3 cm");
@@ -348,7 +349,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can4->cd(3);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_2_5_6");
-  TH3 *h3D33 = h3D->Clone("h3D33");
+  TH3 *h3D33 = (TH3*)h3D->Clone("h3D33");
   h3D33->Add(((TH3*)fold->FindObject("h_tpc_track_neg_recvertex_2_5_6")),1);
   h3D33->GetYaxis()->SetRangeUser(mineta,-0.00001);
   h2D = (TH2*)h3D33->Project3D("xz");
@@ -361,7 +362,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can4->cd(6);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_2_5_6");
-  TH3 *h3D44 = h3D->Clone("h3D44");
+  TH3 *h3D44 = (TH3*)h3D->Clone("h3D44");
   h3D44->Add(((TH3*)fold->FindObject("h_tpc_track_neg_recvertex_2_5_6")),1);
   h3D44->GetYaxis()->SetRangeUser(0.0,maxeta);
   h2D = (TH2*)h3D44->Project3D("xz");
@@ -460,7 +461,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can51->cd(1);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_3_5_7");
-  TH3 *h3Dp = h3D->Clone("h3Dp");
+  TH3 *h3Dp = (TH3*)h3D->Clone("h3Dp");
   h3D->SetAxisRange(0.25,ptMax,"Z");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h2D  = (TH2*)h3D->Project3D("xz");
@@ -490,7 +491,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can51->cd(3);
   h3D = (TH3*)fold->FindObject("h_tpc_track_neg_recvertex_3_5_7");
-  TH3 *h3Dn = h3D->Clone("h3Dn");
+  TH3 *h3Dn = (TH3*)h3D->Clone("h3Dn");
   h3D->SetAxisRange(0.25,ptMax,"Z");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h2D  = (TH2*)h3D->Project3D("xz");
@@ -523,7 +524,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   // ===========================================================================
   // ===| get TPC dEdx performance object |=====================================
   // ===========================================================================
-  AliPerformanceDEdx *obj1 = TPC->FindObject("AliPerformanceDEdxTPCInner");
+  AliPerformanceDEdx *obj1 = (AliPerformanceDEdx*)TPC->FindObject("AliPerformanceDEdxTPCInner");
   if(obj1==NULL) return(0);
 
   // get folder with histograms
@@ -553,20 +554,20 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   can6->cd(4);
   gPad->SetLogx();
   gPad->SetLogz();
-  TH2 *h2 = fold1->FindObject("h_tpc_dedx_0_7");
+  TH2 *h2 = (TH2*)fold1->FindObject("h_tpc_dedx_0_7");
   h2->GetXaxis()->SetRangeUser(0.1,10);
   h2->Draw("colz");
   ////////////////////////////////////////////////////////////////////
   can6->cd(5);
   gPad->SetLogz();
   //fold1->FindObject("h_tpc_dedx_mips_a_0_1")->Draw("colz");
-  TH2 *htest = fold1->FindObject("h_tpc_dedx_mips_a_0_1");
+  TH2 *htest = (TH2*)fold1->FindObject("h_tpc_dedx_mips_a_0_1");
   htest->GetYaxis()->SetRangeUser(30,60);
   htest->Draw("colz");
   can6->cd(6);
   gPad->SetLogz();
   //fold1->FindObject("h_tpc_dedx_mips_c_0_1")->Draw("colz");
-  TH2 *htest1 = fold1->FindObject("h_tpc_dedx_mips_c_0_1");
+  TH2 *htest1 = (TH2*)fold1->FindObject("h_tpc_dedx_mips_c_0_1");
   htest1->GetYaxis()->SetRangeUser(30,60);
   htest1->Draw("colz");
 
@@ -583,28 +584,28 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
 
   can7->cd(1);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_3_5_6");
-  TH3 *h3D71 = h3D->Clone("h3D71");
+  TH3 *h3D71 = (TH3*)h3D->Clone("h3D71");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h3D->Project3D("xz")->Draw("colz");
   h3D->Project3D("xz")->SetTitle("DCAR vs #phi of pos. charged tracks(A)");
 
   can7->cd(2);
   h3D = (TH3*)fold->FindObject("h_tpc_track_neg_recvertex_3_5_6");
-  TH3 *h3D72 = h3D->Clone("h3D72");
+  TH3 *h3D72 = (TH3*)h3D->Clone("h3D72");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h3D->Project3D("xz")->Draw("colz");
   h3D->Project3D("xz")->SetTitle("DCAR vs #phi of neg. charged tracks(A)");
 
   can7->cd(3);
   h3D = (TH3*)fold->FindObject("h_tpc_track_pos_recvertex_4_5_6");
-  TH3 *h3D73 = h3D->Clone("h3D73");
+  TH3 *h3D73 = (TH3*)h3D->Clone("h3D73");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h3D->Project3D("xz")->Draw("colz");
   h3D->Project3D("xz")->SetTitle("DCAZ vs #phi of pos. charged tracks(A)");
 
   can7->cd(4);
   h3D = (TH3*)fold->FindObject("h_tpc_track_neg_recvertex_4_5_6");
-  TH3 *h3D74 = h3D->Clone("h3D74");
+  TH3 *h3D74 = (TH3*)h3D->Clone("h3D74");
   h3D->GetYaxis()->SetRangeUser(0.0,maxeta);
   h3D->Project3D("xz")->Draw("colz");
   h3D->Project3D("xz")->SetTitle("DCAZ vs #phi of neg. charged tracks(A)");
@@ -652,6 +653,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   //
   // event level
   //
+  {
 
   TH1 *h1D = 0;
   TH1 *h1D1 = 0;
@@ -663,15 +665,14 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   //
   // ===| TPC-ITS matching efficiency |=========================================
   //
-  {
   TCanvas *can8 = new TCanvas("can8","TPC-ITS Matching Efficiency",800,800);
   can8->Divide(2,2);
 
   can8->cd(1);
   h2D = (TH2*)(pMatch->FindObject("h_tpc_match_trackingeff_all_2_3"));
   h2D1 = (TH2*)(pMatch->FindObject("h_tpc_match_trackingeff_tpc_2_3"));
-  TH2 *h2D2 = h2D->Clone("h2D2");
-  TH2 *h2D3 = h2D1->Clone("h2D3");
+  TH2 *h2D2 = (TH2*)h2D->Clone("h2D2");
+  TH2 *h2D3 = (TH2*)h2D1->Clone("h2D3");
 
   h2D->GetXaxis()->SetRangeUser(0,1.5);
   h2D1->GetXaxis()->SetRangeUser(0,1.5);
@@ -697,8 +698,8 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   can8->cd(3);
   h2D = (TH2*)(pMatch->FindObject("h_tpc_match_trackingeff_all_1_3"));
   h2D1 = (TH2*)(pMatch->FindObject("h_tpc_match_trackingeff_tpc_1_3"));
-  TH2 *h2D4 = h2D->Clone("h2D4");
-  TH2 *h2D5 = h2D1->Clone("h2D5");
+  TH2 *h2D4 = (TH2*)h2D->Clone("h2D4");
+  TH2 *h2D5 = (TH2*)h2D1->Clone("h2D5");
 
   h2D->GetXaxis()->SetRangeUser(0,1.5);
   h2D1->GetXaxis()->SetRangeUser(0,1.5);
@@ -900,11 +901,16 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   // ===| phi contrained pulls |================================================
   //
   {
+  TObjArray *arr11 = new TObjArray();
+  TObjArray *arr12 = new TObjArray();
+  TObjArray *arr13 = new TObjArray();
+  TObjArray *arr14 = new TObjArray();
+
   TCanvas *can12 = new TCanvas("can12","#delta_{sin#phi}/#sigma_{sin#phi}",800,800);
   can12->Divide(2,2);
 
   h3D = (TH3*)pConstrain->FindObject("h_tpc_constrain_tpc_0_2_3");
-  TH3 *h31 = h3D->Clone("h31");
+  TH3 *h31 = (TH3*)h3D->Clone("h31");
 
   can12->cd(1);
   h3D->GetZaxis()->SetRangeUser(0,maxeta);
@@ -939,7 +945,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   width2->Draw("same");
   width2->SetMarkerColor(2);
   width2->SetLineColor(2);
-  PlotTimestamp(can1);
+  PlotTimestamp(can12);
 
   /*  h31->Project3D("xy")->Draw("colz");
       h31->Project3D("xy")->SetTitle("C Side");
@@ -950,7 +956,7 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   can12->cd(3);
   h3D = (TH3*)pConstrain->FindObject("h_tpc_constrain_tpc_0_1_3");
   h3D->GetZaxis()->SetRangeUser(0,maxeta);
-  TH3 *h32 = h3D->Clone("h32");
+  TH3 *h32 = (TH3*)h3D->Clone("h32");
   h2D = (TH2*)h3D->Project3D("xy");
   h2D->Draw("colz");
   h2D->SetTitle("A Side");
@@ -1269,4 +1275,5 @@ int drawPerformanceTPCQAMatch(const char* inFile = "perf.root") {
   fout<<NEvents<<endl;
   fout.close();
 
+  return 0;
 }

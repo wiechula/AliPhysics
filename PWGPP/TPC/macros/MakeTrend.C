@@ -1,8 +1,10 @@
-int MakeTrend(char *infile,int run) {
+int MakeTrend(const char *infile,int run) {
 
   //char input_file[300];
   //sprintf(input_file,"Run_%d/AnalysisResults.root",run);
   
+  if (TString(infile).Contains("alien://")) TGrid::Connect("alien");
+
   TStopwatch timer;
   timer.Start();
   gSystem->SetIncludePath("-I$ROOTSYS/include -I$ALICE_PHYSICS/include -I$ALICE_PHYSICS/ITS -I$ALICE_PHYSICS -I$ALICE_PHYSICS/TRD");
