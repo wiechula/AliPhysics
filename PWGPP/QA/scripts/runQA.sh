@@ -78,16 +78,21 @@ main()
 
   ocdbregex='raw://'
   if [[ ${ocdbStorage} =~ ${ocdbregex} ]]; then
-    alien-token-init ${alienUserName}
-    #this is a hack! alien-token init seems not enough
-    #but the gclient_env script messes up the LD_LIBRARY_PATH
-    while read x; do
-      eval ${x};
-    done < <(grep -v "LD_LIBRARY_PATH" /tmp/gclient_env_${UID})
+    initToken
   fi
 
   updateQA "$@"
   return 0
+}
+
+initToken()
+{
+  alien-token-init ${alienUserName}
+  #this is a hack! alien-token init seems not enough
+  #but the gclient_env script messes up the LD_LIBRARY_PATH
+  while read x; do
+    eval ${x};
+  done < <(grep -v "LD_LIBRARY_PATH" /tmp/gclient_env_${UID})
 }
 
 updateQA()
@@ -207,7 +212,20 @@ updateQA()
       echo $(date)
       echo "INFO Input file is:" $inputFile
       #first check if input file exists
-      [[ ! -f ${inputFile%\#*} ]] && echo "file ${inputFile%\#*} not accessible" && continue
+      #treat case for files on alien
+      if [[ $inputFile =~ ^alien:// ]]; then
+        if ! alien-token-info | grep 'Token is still valid!'; then
+          echo no valid token creating one
+          initToken
+        fi
+        checkFile=${inputFile#alien://}
+        if ! alien_ls ${checkFile%\#*}; then
+          echo "file ${checkFile%\#*} not accessible on alien"
+          continue
+        fi
+      else
+        [[ ! -f ${inputFile%\#*} ]] && echo "file ${inputFile%\#*} not accessible" && continue
+      fi
 
       if ! guessRunData ${inputFile}; then
         echo "could not guess run data from ${inputFile}"
